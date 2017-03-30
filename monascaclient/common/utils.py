@@ -143,6 +143,13 @@ def import_versioned_module(version, submodule=None):
     return importutils.import_module(module)
 
 
+def import_versioned_log_module(version, submodule=None):
+    module = 'monascaclient.log_v%s' % version
+    if submodule:
+        module = '.'.join((module, submodule))
+    return importutils.import_module(module)
+
+
 def exit(msg=''):
     if msg:
         print(msg.encode('utf-8'), file=sys.stderr)

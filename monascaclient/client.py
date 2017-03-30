@@ -22,3 +22,11 @@ def Client(version, *args, **kwargs):
     if 'use_environment_variables' in kwargs and kwargs['use_environment_variables']:
         utils.set_env_variables(kwargs)
     return client_class(*args, **kwargs)
+
+
+def LogClient(version, *args, **kwargs):
+    module = utils.import_versioned_log_module(version, 'client')
+    client_class = getattr(module, 'Client')
+    if 'use_environment_variables' in kwargs and kwargs['use_environment_variables']:
+        utils.set_env_variables(kwargs)
+    return client_class(*args, **kwargs)

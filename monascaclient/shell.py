@@ -191,6 +191,23 @@ class MonascaShell(object):
         parser.add_argument('--monasca_api_version',
                             help=argparse.SUPPRESS)
 
+        parser.add_argument('--monasca-log-api-url',
+                            default=utils.env('MONASCA_LOG_API_URL'),
+                            help='Defaults to env[MONASCA_LOG_API_URL].')
+
+        parser.add_argument('--monasca_log_api_url',
+                            help=argparse.SUPPRESS)
+
+        parser.add_argument('--monasca-log-api-version',
+                            default=utils.env(
+                                'MONASCA_LOG_API_VERSION',
+                                default='3_0'),
+                            help='Defaults to env[MONASCA_LOG_API_VERSION]'
+                                 ' or 3_0')
+
+        parser.add_argument('--monasca_log_api_version',
+                            help=argparse.SUPPRESS)
+
         parser.add_argument('--os-service-type',
                             default=utils.env('OS_SERVICE_TYPE'),
                             help='Defaults to env[OS_SERVICE_TYPE].')
@@ -221,13 +238,15 @@ class MonascaShell(object):
 
         return parser
 
-    def get_subcommand_parser(self, version):
+    def get_subcommand_parser(self, version, log_version):
         parser = self.get_base_parser()
 
         self.subcommands = {}
         subparsers = parser.add_subparsers(metavar='<subcommand>')
         submodule = utils.import_versioned_module(version, 'shell')
         self._find_actions(subparsers, submodule)
+        log_submodule = utils.import_versioned_log_module(log_version, 'shell')
+        self._find_actions(subparsers, log_submodule)
         self._find_actions(subparsers, self)
         self._add_bash_completion_subparser(subparsers)
 
@@ -283,7 +302,9 @@ class MonascaShell(object):
 
         # build available subcommands based on version
         api_version = options.monasca_api_version
-        subcommand_parser = self.get_subcommand_parser(api_version)
+        log_api_version = options.monasca_log_api_version
+        subcommand_parser = self.get_subcommand_parser(api_version,
+                                                       log_api_version)
         self.parser = subcommand_parser
 
         # Handle top-level --help/-h before attempting to parse
@@ -408,7 +429,13 @@ class MonascaShell(object):
 
         client = monasca_client.Client(api_version, endpoint, **kwargs)
 
-        args.func(client, args)
+        log_endpoint = args.monasca_log_api_url
+        log_client = None
+        if log_endpoint:
+            log_client = monasca_client.LogClient(log_api_version,
+                                                  log_endpoint, **kwargs)
+
+        args.func(client, log_client, args)
 
     def do_bash_completion(self, args):
         """Prints all of the commands and options to stdout.

@@ -69,7 +69,7 @@ notification_types = ['EMAIL', 'WEBHOOK', 'PAGERDUTY']
 @utils.arg('value', metavar='<METRIC_VALUE>',
            type=float,
            help='Metric value.')
-def do_metric_create(mc, args):
+def do_metric_create(mc, mlc, args):
     '''Create metric.'''
     fields = {}
     fields['name'] = args.name
@@ -94,7 +94,7 @@ def do_metric_create(mc, args):
 @utils.arg('jsonbody', metavar='<JSON_BODY>',
            type=json.loads,
            help='The raw JSON body in single quotes. See api doc.')
-def do_metric_create_raw(mc, args):
+def do_metric_create_raw(mc, mlc, args):
     '''Create metric from raw json body.'''
     fields = {}
     fields['jsonbody'] = args.jsonbody
@@ -122,7 +122,7 @@ def do_metric_create_raw(mc, args):
 @utils.arg('--tenant-id', metavar='<TENANT_ID>',
            help="Retrieve data for the specified tenant/project id instead of "
                 "the tenant/project from the user's Keystone credentials.")
-def do_metric_name_list(mc, args):
+def do_metric_name_list(mc, mlc, args):
     '''List names of metrics.'''
     fields = {}
     if args.dimensions:
@@ -169,7 +169,7 @@ def do_metric_name_list(mc, args):
 @utils.arg('--tenant-id', metavar='<TENANT_ID>',
            help="Retrieve data for the specified tenant/project id instead of "
                 "the tenant/project from the user's Keystone credentials.")
-def do_metric_list(mc, args):
+def do_metric_list(mc, mlc, args):
     '''List metrics for this tenant.'''
     fields = {}
     if args.name:
@@ -227,7 +227,7 @@ def do_metric_list(mc, args):
 @utils.arg('--tenant-id', metavar='<TENANT_ID>',
            help="Retrieve data for the specified tenant/project id instead of "
                 "the tenant/project from the user's Keystone credentials.")
-def do_dimension_name_list(mc, args):
+def do_dimension_name_list(mc, mlc, args):
     '''List names of metric dimensions.'''
     fields = {}
     if args.metric_name:
@@ -268,7 +268,7 @@ def do_dimension_name_list(mc, args):
 @utils.arg('--tenant-id', metavar='<TENANT_ID>',
            help="Retrieve data for the specified tenant/project id instead of "
                 "the tenant/project from the user's Keystone credentials.")
-def do_dimension_value_list(mc, args):
+def do_dimension_value_list(mc, mlc, args):
     '''List names of metric dimensions.'''
     fields = {}
     fields['dimension_name'] = args.dimension_name
@@ -405,7 +405,7 @@ def format_metric_dimensions(metrics):
 @utils.arg('--tenant-id', metavar='<TENANT_ID>',
            help="Retrieve data for the specified tenant/project id instead of "
                 "the tenant/project from the user's Keystone credentials.")
-def do_measurement_list(mc, args):
+def do_measurement_list(mc, mlc, args):
     '''List measurements for the specified metric.'''
     fields = {}
     fields['name'] = args.name
@@ -488,7 +488,7 @@ def do_measurement_list(mc, args):
 @utils.arg('--tenant-id', metavar='<TENANT_ID>',
            help="Retrieve data for the specified tenant/project id instead of "
                 "the tenant/project from the user's Keystone credentials.")
-def do_metric_statistics(mc, args):
+def do_metric_statistics(mc, mlc, args):
     '''List measurement statistics for the specified metric.'''
     statistic_types = ['AVG', 'MIN', 'MAX', 'COUNT', 'SUM']
     statlist = args.statistics.split(',')
@@ -585,7 +585,7 @@ def _validate_notification_period(period, notification_type):
            help='A valid EMAIL Address, URL, or SERVICE KEY.')
 @utils.arg('--period', metavar='<PERIOD>', type=int, default=0,
            help='A period for the notification method. Can only be non zero with webhooks')
-def do_notification_create(mc, args):
+def do_notification_create(mc, mlc, args):
     '''Create notification.'''
 
     fields = {}
@@ -608,7 +608,7 @@ def do_notification_create(mc, args):
 
 @utils.arg('id', metavar='<NOTIFICATION_ID>',
            help='The ID of the notification.')
-def do_notification_show(mc, args):
+def do_notification_show(mc, mlc, args):
     '''Describe the notification.'''
     fields = {}
     fields['notification_id'] = args.id
@@ -642,7 +642,7 @@ def do_notification_show(mc, args):
            help='The offset used to paginate the return data.')
 @utils.arg('--limit', metavar='<RETURN LIMIT>',
            help='The amount of data to be returned up to the API maximum limit.')
-def do_notification_list(mc, args):
+def do_notification_list(mc, mlc, args):
     '''List notifications for this tenant.'''
     fields = {}
     if args.limit:
@@ -695,7 +695,7 @@ def do_notification_list(mc, args):
 
 @utils.arg('id', metavar='<NOTIFICATION_ID>',
            help='The ID of the notification.')
-def do_notification_delete(mc, args):
+def do_notification_delete(mc, mlc, args):
     '''Delete notification.'''
     fields = {}
     fields['notification_id'] = args.id
@@ -719,7 +719,7 @@ def do_notification_delete(mc, args):
            help='A valid EMAIL Address, URL, or SERVICE KEY.')
 @utils.arg('period', metavar='<PERIOD>', type=int,
            help='A period for the notification method. Can only be non zero with webhooks')
-def do_notification_update(mc, args):
+def do_notification_update(mc, mlc, args):
     '''Update notification.'''
     fields = {}
     fields['notification_id'] = args.id
@@ -750,7 +750,7 @@ def do_notification_update(mc, args):
            help='A valid EMAIL Address, URL, or SERVICE KEY.')
 @utils.arg('--period', metavar='<PERIOD>', type=int,
            help='A period for the notification method. Can only be non zero with webhooks')
-def do_notification_patch(mc, args):
+def do_notification_patch(mc, mlc, args):
     '''Patch notification.'''
     fields = {}
     fields['notification_id'] = args.id
@@ -811,7 +811,7 @@ def _validate_severity(severity):
            help='The notification method to use when an alarm state is '
            'UNDETERMINED. This param may be specified multiple times.',
            action='append')
-def do_alarm_definition_create(mc, args):
+def do_alarm_definition_create(mc, mlc, args):
     '''Create an alarm definition.'''
     fields = {}
     fields['name'] = args.name
@@ -842,7 +842,7 @@ def do_alarm_definition_create(mc, args):
 
 @utils.arg('id', metavar='<ALARM_DEFINITION_ID>',
            help='The ID of the alarm definition.')
-def do_alarm_definition_show(mc, args):
+def do_alarm_definition_show(mc, mlc, args):
     '''Describe the alarm definition.'''
     fields = {}
     fields['alarm_id'] = args.id
@@ -894,7 +894,7 @@ def do_alarm_definition_show(mc, args):
            help='The offset used to paginate the return data.')
 @utils.arg('--limit', metavar='<RETURN LIMIT>',
            help='The amount of data to be returned up to the API maximum limit.')
-def do_alarm_definition_list(mc, args):
+def do_alarm_definition_list(mc, mlc, args):
     '''List alarm definitions for this tenant.'''
     fields = {}
     if args.name:
@@ -951,7 +951,7 @@ def do_alarm_definition_list(mc, args):
 
 @utils.arg('id', metavar='<ALARM_DEFINITION_ID>',
            help='The ID of the alarm definition.')
-def do_alarm_definition_delete(mc, args):
+def do_alarm_definition_delete(mc, mlc, args):
     '''Delete the alarm definition.'''
     fields = {}
     fields['alarm_id'] = args.id
@@ -992,7 +992,7 @@ def do_alarm_definition_delete(mc, args):
            'that confuse the CLI parser.')
 @utils.arg('severity', metavar='<SEVERITY>',
            help='Severity is one of [LOW, MEDIUM, HIGH, CRITICAL].')
-def do_alarm_definition_update(mc, args):
+def do_alarm_definition_update(mc, mlc, args):
     '''Update the alarm definition.'''
     fields = {}
     fields['alarm_id'] = args.id
@@ -1046,7 +1046,7 @@ def do_alarm_definition_update(mc, args):
            help='The actions-enabled boolean is one of [true,false].')
 @utils.arg('--severity', metavar='<SEVERITY>',
            help='Severity is one of [LOW, MEDIUM, HIGH, CRITICAL].')
-def do_alarm_definition_patch(mc, args):
+def do_alarm_definition_patch(mc, mlc, args):
     '''Patch the alarm definition.'''
     fields = {}
     fields['alarm_id'] = args.id
@@ -1115,7 +1115,7 @@ def do_alarm_definition_patch(mc, args):
            help='The offset used to paginate the return data.')
 @utils.arg('--limit', metavar='<RETURN LIMIT>',
            help='The amount of data to be returned up to the API maximum limit.')
-def do_alarm_list(mc, args):
+def do_alarm_list(mc, mlc, args):
     '''List alarms for this tenant.'''
     fields = {}
     if args.alarm_definition_id:
@@ -1196,7 +1196,7 @@ def do_alarm_list(mc, args):
 
 @utils.arg('id', metavar='<ALARM_ID>',
            help='The ID of the alarm.')
-def do_alarm_show(mc, args):
+def do_alarm_show(mc, mlc, args):
     '''Describe the alarm.'''
     fields = {}
     fields['alarm_id'] = args.id
@@ -1229,7 +1229,7 @@ def do_alarm_show(mc, args):
            help='The lifecycle state of the alarm.')
 @utils.arg('link', metavar='<LINK>',
            help='A link to an external resource with information about the alarm.')
-def do_alarm_update(mc, args):
+def do_alarm_update(mc, mlc, args):
     '''Update the alarm state.'''
     fields = {}
     fields['alarm_id'] = args.id
@@ -1259,7 +1259,7 @@ def do_alarm_update(mc, args):
            help='The lifecycle state of the alarm.')
 @utils.arg('--link', metavar='<LINK>',
            help='A link to an external resource with information about the alarm.')
-def do_alarm_patch(mc, args):
+def do_alarm_patch(mc, mlc, args):
     '''Patch the alarm state.'''
     fields = {}
     fields['alarm_id'] = args.id
@@ -1286,7 +1286,7 @@ def do_alarm_patch(mc, args):
 
 @utils.arg('id', metavar='<ALARM_ID>',
            help='The ID of the alarm.')
-def do_alarm_delete(mc, args):
+def do_alarm_delete(mc, mlc, args):
     '''Delete the alarm.'''
     fields = {}
     fields['alarm_id'] = args.id
@@ -1357,7 +1357,7 @@ def output_alarm_history(args, alarm_history):
            help='The offset used to paginate the return data.')
 @utils.arg('--limit', metavar='<RETURN LIMIT>',
            help='The amount of data to be returned up to the API maximum limit.')
-def do_alarm_count(mc, args):
+def do_alarm_count(mc, mlc, args):
     '''Count alarms.'''
     fields = {}
     if args.alarm_definition_id:
@@ -1417,7 +1417,7 @@ def do_alarm_count(mc, args):
            help='The offset used to paginate the return data.')
 @utils.arg('--limit', metavar='<RETURN LIMIT>',
            help='The amount of data to be returned up to the API maximum limit.')
-def do_alarm_history(mc, args):
+def do_alarm_history(mc, mlc, args):
     '''Alarm state transition history.'''
     fields = {}
     fields['alarm_id'] = args.id
@@ -1450,7 +1450,7 @@ def do_alarm_history(mc, args):
            help='The offset used to paginate the return data.')
 @utils.arg('--limit', metavar='<RETURN LIMIT>',
            help='The amount of data to be returned up to the API maximum limit.')
-def do_alarm_history_list(mc, args):
+def do_alarm_history_list(mc, mlc, args):
     '''List alarms state history.'''
     fields = {}
     if args.dimensions:
@@ -1474,7 +1474,7 @@ def do_alarm_history_list(mc, args):
         output_alarm_history(args, alarm)
 
 
-def do_notification_type_list(mc, args):
+def do_notification_type_list(mc, mlc, args):
     '''List notification types supported by monasca.'''
 
     try:
